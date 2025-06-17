@@ -1,0 +1,25 @@
+{
+  "name": "exbackend",
+  "version": "1.0.0",
+  "description": "Coder House Course; Backend I",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/panxo87sl/exbackend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/panxo87sl/exbackend/issues"
+  },
+  "homepage": "https://github.com/panxo87sl/exbackend#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
