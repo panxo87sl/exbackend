@@ -131,7 +131,7 @@ server.post("/api/carts/:cid/products/:pid", (request, response) => {
   if (!cart) {
     return response
       .status(400)
-      .json({ error: "carrito no existe", idCarrito: pid });
+      .json({ error: "carrito no existe", idCarrito: cid });
   }
 
   const productChoice = products.find((item) => item.id === pid);
