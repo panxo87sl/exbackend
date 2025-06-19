@@ -4,7 +4,7 @@ server.use(express.json()); //midleware para que el server interprete JSON
 const port = "8080";
 
 let products = [];
-let cart = [];
+let carts = [];
 
 server.get("/api/products", (request, response) => {
   response.json(products);
@@ -34,7 +34,7 @@ server.post("/api/products", (request, response) => {
   ) {
     return response.status(400).json({
       error:
-        "Faltan campos obligatorios: title, description, code, price, stock, category,",
+        "faltan campos obligatorios: title, description, code, price, stock, category,",
     });
   }
   const newProduct = {
@@ -69,7 +69,7 @@ server.put("/api/products/:pid", (request, response) => {
   const auxIndex = products.findIndex((item) => item.id === parseInt(pid)); //devuelve -1 si no se encuentra el ID
   if (auxIndex === -1) {
     return response.status(400).json({
-      error: "El producto no existe",
+      error: "el producto no existe",
     });
   }
   if (
@@ -87,7 +87,7 @@ server.put("/api/products/:pid", (request, response) => {
   };
 
   response.status(200).json({
-    message: "Producto actualizado",
+    message: "producto actualizado",
     product: products[auxIndex],
   });
 });
@@ -95,18 +95,18 @@ server.delete("/api/products/:pid", (request, response) => {
   const { pid } = request.params;
   const deleteIndex = products.findIndex((item) => item.id === parseInt(pid));
   if (deleteIndex === -1) {
-    return response.status(400).json({ error: "Producto no encontrado" });
+    return response.status(400).json({ error: "producto no encontrado" });
   }
   products.splice(deleteIndex, 1);
   response.status(200).json({
-    message: "Producto eliminado",
+    message: "producto eliminado",
     products: products,
   });
 });
 
 server.get("/api/carts/:cid", (request, response) => {
   const { cid } = request.params;
-  const auxCart = cart.find((item) => item.id === parseInt(cid));
+  const auxCart = carts.find((item) => item.id === parseInt(cid));
 
   if (!auxCart) {
     return response.status(400).json({ error: "carrito no existe" });
@@ -114,14 +114,50 @@ server.get("/api/carts/:cid", (request, response) => {
   response.status(200).json(auxCart);
 });
 server.post("/api/carts", (request, response) => {
-  const newCart = { id: cart.length + 1, products: [] };
-  cart.push(newCart);
+  const newCart = { id: carts.length + 1, products: [] };
+  carts.push(newCart);
   response
     .status(201)
-    .json({ message: "Carrito creadod correctamente", cart: cart });
+    .json({ message: "carrito creado correctamente", cart: carts });
 });
-server.post("/api/carts/:cid/products/:pid", (request, response) => {});
+server.post("/api/carts/:cid/products/:pid", (request, response) => {
+  const cid = parseInt(request.params.cid);
+  const pid = parseInt(request.params.pid);
+
+  if (carts.length < 1) {
+    return response.status(400).json({ error: "no hay carros disponibles" });
+  }
+  const cart = carts.find((item) => item.id === cid);
+  if (!cart) {
+    return response
+      .status(400)
+      .json({ error: "carrito no existe", idCarrito: pid });
+  }
+
+  const productChoice = products.find((item) => item.id === pid);
+  if (!productChoice) {
+    return response
+      .status(400)
+      .json({ error: "producto no existe", idProducto: pid });
+  }
+
+  const listProductsOnCart = cart.products; //lista de productos en el carro
+  const indexProductOnCart = listProductsOnCart.findIndex(
+    (item) => item.id === pid
+  ); //me devuelve el indice donde esta el objeto en el carro
+
+  if (indexProductOnCart === -1) {
+    const newProductToCart = { id: pid, quantity: 1 }; //si no existe se crea el objeto
+    listProductsOnCart.push(newProductToCart);
+  } else {
+    listProductsOnCart[indexProductOnCart].quantity++; //si existe se aumenta su cantidad
+  }
+  response.status(200).json({
+    message: "producto agregado al carrito",
+    product: listProductsOnCart,
+  });
+});
 
 server.listen(port, () => {
-  console.log(`Servidor escuchando en http://localhost:${port}`);
+  console.log(`servidor escuchando en http://localhost:${port}`);
 });
