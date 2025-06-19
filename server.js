@@ -4,7 +4,7 @@ server.use(express.json()); //midleware para que el server interprete JSON
 const port = "8080";
 
 let products = [];
-let carrito = [];
+let cart = [];
 
 server.get("/api/products", (request, response) => {
   response.json(products);
@@ -104,8 +104,22 @@ server.delete("/api/products/:pid", (request, response) => {
   });
 });
 
-server.post("/api/carts", (request, response) => {});
-server.get("/api/carts/:cid", (request, response) => {});
+server.get("/api/carts/:cid", (request, response) => {
+  const { cid } = request.params;
+  const auxCart = cart.find((item) => item.id === parseInt(cid));
+
+  if (!auxCart) {
+    return response.status(400).json({ error: "carrito no existe" });
+  }
+  response.status(200).json(auxCart);
+});
+server.post("/api/carts", (request, response) => {
+  const newCart = { id: cart.length + 1, products: [] };
+  cart.push(newCart);
+  response
+    .status(201)
+    .json({ message: "Carrito creadod correctamente", cart: cart });
+});
 server.post("/api/carts/:cid/products/:pid", (request, response) => {});
 
 server.listen(port, () => {
