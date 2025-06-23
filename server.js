@@ -1,10 +1,9 @@
 import express from "express";
 import ProductManager from "./managers/ProductManager.js";
+import CartManager from "./managers/CartManager.js";
 const server = express(); //instancia principal
 server.use(express.json()); //midleware para que el server interprete JSON
 const port = "8080";
-
-let carts = [];
 
 server.get("/api/products", (request, response) => {
   response.json(ProductManager.getAll());
@@ -96,9 +95,10 @@ server.delete("/api/products/:pid", (request, response) => {
   });
 });
 
+//PROCEDIMIENTOS DE CARRO
 server.get("/api/carts/:cid", (request, response) => {
-  const { cid } = request.params;
-  const auxCart = carts.find((item) => item.id === parseInt(cid));
+  const cid = parseInt(request.params.cid);
+  const auxCart = CartManager.getById(cid);
 
   if (!auxCart) {
     return response.status(400).json({ error: "carrito no existe" });
@@ -106,47 +106,37 @@ server.get("/api/carts/:cid", (request, response) => {
   response.status(200).json(auxCart);
 });
 server.post("/api/carts", (request, response) => {
-  const newCart = { id: carts.length + 1, products: [] };
-  carts.push(newCart);
+  const newCart = CartManager.add();
   response
     .status(201)
-    .json({ message: "carrito creado correctamente", cart: carts });
+    .json({ message: "carrito creado correctamente", cart: newCart });
 });
 server.post("/api/carts/:cid/products/:pid", (request, response) => {
   const cid = parseInt(request.params.cid);
   const pid = parseInt(request.params.pid);
 
-  if (carts.length < 1) {
-    return response.status(400).json({ error: "no hay carros disponibles" });
-  }
-  const cart = carts.find((item) => item.id === cid);
+  // if (carts.length < 1) {
+  //   return response.status(400).json({ error: "no hay carros disponibles" });
+  // }
+
+  const cart = CartManager.getById(cid);
   if (!cart) {
     return response
       .status(400)
       .json({ error: "carrito no existe", idCarrito: cid });
   }
 
-  const productChoice = products.find((item) => item.id === pid);
+  const productChoice = ProductManager.getById(pid);
   if (!productChoice) {
     return response
       .status(400)
       .json({ error: "producto no existe", idProducto: pid });
   }
 
-  const listProductsOnCart = cart.products; //lista de productos en el carro
-  const indexProductOnCart = listProductsOnCart.findIndex(
-    (item) => item.id === pid
-  ); //me devuelve el indice donde esta el objeto en el carro
-
-  if (indexProductOnCart === -1) {
-    const newProductToCart = { id: pid, quantity: 1 }; //si no existe se crea el objeto
-    listProductsOnCart.push(newProductToCart);
-  } else {
-    listProductsOnCart[indexProductOnCart].quantity++; //si existe se aumenta su cantidad
-  }
+  const updateCart = CartManager.addProductToCart(cid, pid);
   response.status(200).json({
     message: "producto agregado al carrito",
-    product: listProductsOnCart,
+    product: updateCart,
   });
 });
 
