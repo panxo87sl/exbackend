@@ -106,22 +106,28 @@ server.delete("/api/products/:pid", async (request, response) => {
 });
 
 //PROCEDIMIENTOS DE CARRO
-server.get("/api/carts/:cid", (request, response) => {
+
+//GET ID
+server.get("/api/carts/:cid", async (request, response) => {
   const cid = parseInt(request.params.cid);
-  const auxCart = CartManager.getById(cid);
+  const auxCart = await CartManager.getById(cid);
 
   if (!auxCart) {
     return response.status(400).json({ error: "carrito no existe" });
   }
   response.status(200).json(auxCart);
 });
-server.post("/api/carts", (request, response) => {
-  const newCart = CartManager.add();
+
+//POST
+server.post("/api/carts", async (request, response) => {
+  const newCart = await CartManager.add();
   response
     .status(201)
     .json({ message: "carrito creado correctamente", cart: newCart });
 });
-server.post("/api/carts/:cid/products/:pid", (request, response) => {
+
+//POST Product to Cart
+server.post("/api/carts/:cid/products/:pid", async (request, response) => {
   const cid = parseInt(request.params.cid);
   const pid = parseInt(request.params.pid);
 
@@ -129,21 +135,21 @@ server.post("/api/carts/:cid/products/:pid", (request, response) => {
   //   return response.status(400).json({ error: "no hay carros disponibles" });
   // }
 
-  const cart = CartManager.getById(cid);
+  const cart = await CartManager.getById(cid);
   if (!cart) {
     return response
       .status(400)
       .json({ error: "carrito no existe", idCarrito: cid });
   }
 
-  const productChoice = ProductManager.getById(pid);
+  const productChoice = await ProductManager.getById(pid);
   if (!productChoice) {
     return response
       .status(400)
       .json({ error: "producto no existe", idProducto: pid });
   }
 
-  const updateCart = CartManager.addProductToCart(cid, pid);
+  const updateCart = await CartManager.addProductToCart(cid, pid);
   response.status(200).json({
     message: "producto agregado al carrito",
     product: updateCart,

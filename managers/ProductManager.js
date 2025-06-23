@@ -1,7 +1,6 @@
 import fs from "fs/promises";
 class ProductManager {
   constructor() {
-    this.products = [];
     this.path = "./data/products.json";
   }
   //GET

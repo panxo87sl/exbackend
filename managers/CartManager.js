@@ -1,23 +1,43 @@
+import fs from "fs/promises";
 class CartManager {
   constructor() {
     this.carts = [];
+    this.path = "./data/carts.json";
   }
-  getAll() {
-    return this.carts;
+
+  //GET
+  async getAll() {
+    try {
+      const data = await fs.readFile(this.path, "utf-8");
+      // return this.products;
+      return JSON.parse(data);
+    } catch (error) {
+      return [];
+    }
   }
-  getById(cid) {
-    return this.carts.find((item) => item.id === cid);
+
+  //GET ID
+  async getById(cid) {
+    const dataCarts = await this.getAll();
+    return dataCarts.find((item) => item.id === cid);
   }
-  add() {
+
+  //POST
+  async add() {
+    const dataCarts = await this.getAll();
     const newCart = {
-      id: this.carts.length + 1,
+      id: dataCarts.length + 1,
       products: [],
     };
-    this.carts.push(newCart);
+    dataCarts.push(newCart);
+    await fs.writeFile(this.path, JSON.stringify(dataCarts));
     return newCart;
   }
-  addProductToCart(cid, pid) {
-    const auxCart = this.getById(cid);
+
+  //POST Product to Cart
+  async addProductToCart(cid, pid) {
+    const dataCarts = await this.getAll();
+    const auxCart = dataCarts.find((item) => item.id === cid);
     const listProductsOnCart = auxCart.products; //lista de productos en el carro
     const indexProductOnCart = listProductsOnCart.findIndex(
       (item) => item.id === pid
@@ -29,6 +49,7 @@ class CartManager {
     } else {
       listProductsOnCart[indexProductOnCart].quantity++; //si existe se aumenta su cantidad
     }
+    await fs.writeFile(this.path, JSON.stringify(dataCarts));
     return auxCart;
   }
 }
