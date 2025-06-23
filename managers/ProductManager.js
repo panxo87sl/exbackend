@@ -1,14 +1,37 @@
+import fs from "fs/promises";
 class ProductManager {
   constructor() {
     this.products = [];
+    this.path = "./data/products.json";
   }
-  getAll() {
-    return this.products;
+  //GET
+  async getAll() {
+    try {
+      const data = await fs.readFile(this.path, "utf-8");
+      // return this.products;
+      return JSON.parse(data);
+    } catch (error) {
+      return [];
+    }
   }
-  getById(pid) {
-    return this.products.find((item) => item.id === pid);
+  //GET ID
+  async getById(pid) {
+    const dataProducts = await this.getAll();
+    return dataProducts.find((item) => item.id === pid);
   }
-  add(id, title, description, code, numPrice, numStock, prodStatus, category) {
+  //POST ADD
+  async add(
+    id,
+    title,
+    description,
+    code,
+    numPrice,
+    numStock,
+    prodStatus,
+    category
+  ) {
+    const dataProducts = await this.getAll();
+
     const newProduct = {
       id,
       title,
@@ -19,22 +42,29 @@ class ProductManager {
       stock: numStock,
       category,
     };
-    this.products.push(newProduct);
+    dataProducts.push(newProduct);
+    await fs.writeFile(this.path, JSON.stringify(dataProducts));
     return newProduct;
   }
-  updateById(pid, updateData) {
-    const auxIndex = this.products.findIndex((item) => item.id === pid);
-    this.products[auxIndex] = {
-      ...this.products[auxIndex],
+  //PUT UPDATE
+  async updateById(pid, updateData) {
+    const dataProducts = await this.getAll();
+    const auxIndex = dataProducts.findIndex((item) => item.id === pid);
+    dataProducts[auxIndex] = {
+      ...dataProducts[auxIndex],
       ...updateData,
       id: pid, //para evitar actualizar el ID
     };
-    return this.products[auxIndex];
+    await fs.writeFile(this.path, JSON.stringify(dataProducts));
+    return dataProducts[auxIndex];
   }
-  daleteById(pid) {
-    const deleteIndex = this.products.findIndex((item) => item.id === pid);
-    this.products.splice(deleteIndex, 1);
-    return this.products;
+  //DELETE
+  async daleteById(pid) {
+    const dataProducts = await this.getAll();
+    const deleteIndex = dataProducts.findIndex((item) => item.id === pid);
+    dataProducts.splice(deleteIndex, 1);
+    await fs.writeFile(this.path, JSON.stringify(dataProducts));
+    return this.getAll();
   }
 }
 export default new ProductManager();
