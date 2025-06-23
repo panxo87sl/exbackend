@@ -1,22 +1,22 @@
 import express from "express";
+import ProductManager from "./managers/ProductManager.js";
 const server = express(); //instancia principal
 server.use(express.json()); //midleware para que el server interprete JSON
 const port = "8080";
 
-let products = [];
 let carts = [];
 
 server.get("/api/products", (request, response) => {
-  response.json(products);
+  response.json(ProductManager.getAll());
 });
 server.post("/api/products", (request, response) => {
   const {
-    id = products.length + 1,
+    id = ProductManager.getAll().length + 1,
     title,
     description,
     code,
     price,
-    status = true,
+    prodStatus = true,
     stock,
     category,
   } = request.body;
@@ -37,23 +37,22 @@ server.post("/api/products", (request, response) => {
         "faltan campos obligatorios: title, description, code, price, stock, category,",
     });
   }
-  const newProduct = {
+  const newProduct = ProductManager.add(
     id,
     title,
     description,
     code,
-    price: numPrice,
-    status,
-    stock: numStock,
-    category,
-  };
-  products.push(newProduct);
+    numPrice,
+    prodStatus,
+    numStock,
+    category
+  );
   response.status(201).json(newProduct);
 });
 
 server.get("/api/products/:pid", (request, response) => {
-  const { pid } = request.params;
-  const auxProduct = products.find((item) => item.id === parseInt(pid));
+  const pid = parseInt(request.params.pid);
+  const auxProduct = ProductManager.getById(pid);
   if (!auxProduct) {
     return response.status(400).json({
       error: "producto no encontrado",
@@ -63,44 +62,37 @@ server.get("/api/products/:pid", (request, response) => {
   response.json(auxProduct);
 });
 server.put("/api/products/:pid", (request, response) => {
-  const { pid } = request.params;
+  const pid = parseInt(request.params.pid);
   const updateData = request.body;
 
-  const auxIndex = products.findIndex((item) => item.id === parseInt(pid)); //devuelve -1 si no se encuentra el ID
-  if (auxIndex === -1) {
+  const auxIndex = ProductManager.getById(pid);
+  if (!auxIndex) {
     return response.status(400).json({
       error: "el producto no existe",
     });
   }
-  if (
-    "price" in updateData &&
-    isNaN(Number(updateData.price)) &&
-    "stock" in updateData &&
-    isNaN(Number(updateData.stock))
-  ) {
-    return res.status(400).json({ error: "price y stock deben ser números" });
+  if (isNaN(Number(updateData.price)) || isNaN(Number(updateData.stock))) {
+    return response
+      .status(400)
+      .json({ error: "price y stock deben ser números" });
   }
-  products[auxIndex] = {
-    ...products[auxIndex],
-    ...updateData,
-    id: parseInt(pid), //para evitar actualizar el ID
-  };
+  const updateProduct = ProductManager.updateById(pid, updateData);
 
   response.status(200).json({
     message: "producto actualizado",
-    product: products[auxIndex],
+    product: updateProduct,
   });
 });
 server.delete("/api/products/:pid", (request, response) => {
-  const { pid } = request.params;
-  const deleteIndex = products.findIndex((item) => item.id === parseInt(pid));
-  if (deleteIndex === -1) {
+  const pid = parseInt(request.params.pid);
+  const deleteProduct = ProductManager.getById(pid);
+  if (!deleteProduct) {
     return response.status(400).json({ error: "producto no encontrado" });
   }
-  products.splice(deleteIndex, 1);
+  const newProducts = ProductManager.daleteById(pid);
   response.status(200).json({
     message: "producto eliminado",
-    products: products,
+    products: newProducts,
   });
 });
 
