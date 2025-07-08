@@ -39,9 +39,7 @@ class CartManager {
     const dataCarts = await this.getAll();
     const auxCart = dataCarts.find((item) => item.id === cid);
     const listProductsOnCart = auxCart.products; //lista de productos en el carro
-    const indexProductOnCart = listProductsOnCart.findIndex(
-      (item) => item.id === pid
-    ); //me devuelve el indice donde esta el objeto en el carro
+    const indexProductOnCart = listProductsOnCart.findIndex((item) => item.id === pid); //me devuelve el indice donde esta el objeto en el carro
 
     if (indexProductOnCart === -1) {
       const newProductToCart = { id: pid, quantity: 1 }; //si no existe se crea el objeto
