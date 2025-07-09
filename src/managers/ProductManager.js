@@ -1,7 +1,7 @@
 import fs from "fs/promises";
 class ProductManager {
   constructor() {
-    this.path = "./data/products.json";
+    this.path = import.meta.dirname + "/../data/products.json";
   }
   //GET
   async getAll() {
@@ -19,16 +19,7 @@ class ProductManager {
     return dataProducts.find((item) => item.id === pid);
   }
   //POST ADD
-  async add(
-    id,
-    title,
-    description,
-    code,
-    numPrice,
-    numStock,
-    prodStatus,
-    category
-  ) {
+  async add(id, title, description, code, numPrice, numStock, prodStatus, category) {
     const dataProducts = await this.getAll();
 
     const newProduct = {

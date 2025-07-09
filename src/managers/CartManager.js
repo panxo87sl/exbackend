@@ -2,7 +2,7 @@ import fs from "fs/promises";
 class CartManager {
   constructor() {
     this.carts = [];
-    this.path = "./data/carts.json";
+    this.path = import.meta.dirname + "/../data/carts.json";
   }
 
   //GET
