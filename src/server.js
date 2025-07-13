@@ -2,8 +2,8 @@ import express from "express";
 //routes
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
-//managers
-import ProductManager from "./managers/ProductManager.js";
+import viewsRouter from "./routes/views.router.js";
+
 //plantillas handlebars
 import { engine } from "express-handlebars";
 
@@ -15,14 +15,11 @@ const port = "8080"; //variable puerto
 //se montan los routers
 server.use("/api/products", productsRouter); //implementacion router
 server.use("/api/carts", cartsRouter); //implementacion router
+server.use("/", viewsRouter);
 //handlebars
-server.get("/", async (request, response) => {
-  server.engine("handlebars", engine());
-  server.set("view engine", "handlebars");
-  server.set("views", import.meta.dirname + "/views");
-  const products = await ProductManager.getAll();
-  response.render("home", { layout: false, products });
-});
+server.engine("handlebars", engine());
+server.set("views", import.meta.dirname + "/views");
+server.set("view engine", "handlebars"); //motor de vistas que se van a utilizar
 
 server.listen(port, () => {
   console.log(`servidor escuchando en http://localhost:${port}`);
