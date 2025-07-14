@@ -1,17 +1,30 @@
 <h2>Lista de productos en tiempo real</h2>
+<p><strong>⭐ Controlando POST y DELETE con Emit ⭐</strong></p>
 
-<ul id="product-list">
-  {{#each products}}
-    <li>
-      <strong>{{title}}</strong>
-      - Precio: ${{price}}
-      - Stock:
-      {{stock}}
-      - SKU:
-      {{id}}
-    </li>
+{{!-- <ul id="product-list">
+{{#each products}}
+  <li>
+    <strong>{{title}}</strong>
+    - Precio: ${{price}}
+    - Stock:
+    {{stock}}
+    - SKU:
+    {{id}}
+  </li>
   {{/each}}
-</ul>
+</ul> --}}
+<div id="product-list" class="productcards-container">
+
+  {{#each products}}
+    <div class="product-card">
+      <span class="sku">SKU: {{id}}</span>
+      <span class="stock">Stock: {{stock}}</span>
+      <h3 class="title">{{title}}</h3>
+      <p class="price"><strong>${{price}}</strong></p>
+    </div>
+  {{/each}}
+
+</div>
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/main.js"></script>
