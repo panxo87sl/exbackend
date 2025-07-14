@@ -3,6 +3,10 @@ import { Router } from "express";
 import ProductManager from "../managers/ProductManager.js";
 
 const router = Router();
+async function emitUpdaterProducts(request) {
+  const updatedProducts = await ProductManager.getAll();
+  request.app.get("io").emit("update-products", updatedProducts);
+}
 
 //GET
 router.get("/", async (request, response) => {
@@ -27,6 +31,7 @@ router.get("/:pid", async (request, response) => {
 router.post("/", async (request, response) => {
   const products = await ProductManager.getAll();
   const { id = products.length + 1, title, description, code, price, prodStatus = true, stock, category } = request.body;
+  console.log(id, title, description, code, price, prodStatus, stock, category);
 
   const numPrice = parseInt(price);
   const numStock = parseInt(stock);
@@ -37,6 +42,7 @@ router.post("/", async (request, response) => {
     });
   }
   const newProduct = await ProductManager.add(id, title, description, code, numPrice, prodStatus, numStock, category);
+  await emitUpdaterProducts(request);
   response.status(201).json(newProduct);
 });
 
@@ -70,6 +76,8 @@ router.delete("/:pid", async (request, response) => {
     return response.status(400).json({ error: "producto no encontrado" });
   }
   const newProducts = await ProductManager.daleteById(pid);
+  const updatedProducts = await ProductManager.getAll();
+  await emitUpdaterProducts(request); //
   response.status(200).json({
     message: "producto eliminado",
     products: newProducts,

@@ -3,6 +3,8 @@ import express from "express";
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/views.router.js";
+//managers
+import ProductManager from "./managers/ProductManager.js";
 //plantillas handlebars
 import { engine } from "express-handlebars";
 //socket.io
@@ -29,9 +31,12 @@ server.use("/", viewsRouter);
 //socket.io
 const httpServer = createServer(server);
 const io = new Server(httpServer);
+server.set("io", io);
 
-io.on("connection", (socket) => {
+io.on("connection", async (socket) => {
   console.log("Cliente conectado a WebSocket: " + socket.id);
+  const products = await ProductManager.getAll();
+  socket.emit("update-products", products);
 });
 
 // server.listen(port, () => {
