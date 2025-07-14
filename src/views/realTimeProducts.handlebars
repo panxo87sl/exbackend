@@ -14,16 +14,18 @@
   {{/each}}
 </ul> --}}
 <div id="product-list" class="productcards-container">
-
-  {{#each products}}
-    <div class="product-card">
-      <span class="sku">SKU: {{id}}</span>
-      <span class="stock">Stock: {{stock}}</span>
-      <h3 class="title">{{title}}</h3>
-      <p class="price"><strong>${{price}}</strong></p>
-    </div>
-  {{/each}}
-
+  {{#if products.length}}
+    {{#each products}}
+      <div class="product-card">
+        <span class="sku">SKU: {{id}}</span>
+        <span class="stock">Stock: {{stock}}</span>
+        <h3 class="title">{{title}}</h3>
+        <p class="price"><strong>${{price}}</strong></p>
+      </div>
+    {{/each}}
+  {{else}}
+    <span>No hay productos disponibles</span>
+  {{/if}}
 </div>
 
 <script src="/socket.io/socket.io.js"></script>

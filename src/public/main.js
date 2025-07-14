@@ -6,18 +6,24 @@ socket.on("update-products", (products) => {
 
   const list = document.getElementById("product-list");
   list.innerHTML = "";
-  products.forEach((product) => {
-    // const li = document.createElement("li");
-    // li.innerHTML = `<strong>${product.title}</strong> - $${product.price} - Stock: ${product.stock} - SKU: ${product.id}`;
-    // list.appendChild(li);
-    const card = document.createElement("div");
-    card.className = "product-card";
-    card.innerHTML = `
+  if (products.length > 0) {
+    products.forEach((product) => {
+      // const li = document.createElement("li");
+      // li.innerHTML = `<strong>${product.title}</strong> - $${product.price} - Stock: ${product.stock} - SKU: ${product.id}`;
+      // list.appendChild(li);
+      const card = document.createElement("div");
+      card.className = "product-card";
+      card.innerHTML = `
       <span class="stock">Stock: ${product.stock}</span>
       <span class="sku">SKU: ${product.id}</span>
       <h3 class="title">${product.title}</h3>
       <p class="price"><strong>$${product.price}</strong></p>
     `;
-    list.appendChild(card);
-  });
+      list.appendChild(card);
+    });
+  } else {
+    const divMessage = document.createElement("div");
+    divMessage.innerHTML = `<span>No hay productos disponibles</span>`;
+    list.appendChild(divMessage);
+  }
 });
