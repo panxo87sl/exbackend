@@ -1,4 +1,7 @@
 import express from "express";
+//imports Mongoose
+import mongoose from "mongoose";
+import { connectMongoDB } from "./config/db.js";
 //routes
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
@@ -42,6 +45,14 @@ io.on("connection", async (socket) => {
 // server.listen(port, () => {
 //   console.log(`servidor escuchando en http://localhost:${port}`);
 // });
+
+// migrare la config basica de mongoose a una carpeta especifica
+//   .connect("mongodb+srv://admin:admin1234@cluster0.bm6y9cu.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+//   .then(() => console.log("✅ MongoDB connected successfully"))
+//   .catch((e) => console.error("❌ MongoDB connection error:\n", e));
+
+await connectMongoDB(); //conexion
+
 httpServer.listen(port, () => {
   console.log(`Servidor escuchando en http://localhost:${port}`);
 });
