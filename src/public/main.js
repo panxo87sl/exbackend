@@ -15,7 +15,7 @@ socket.on("update-products", (products) => {
       card.className = "product-card";
       card.innerHTML = `
       <span class="stock">Stock: ${product.stock}</span>
-      <span class="sku">SKU: ${product.id}</span>
+      <span class="sku">SKU: ${product.code}</span>
       <h3 class="title">${product.title}</h3>
       <p class="price"><strong>$${product.price}</strong></p>
     `;

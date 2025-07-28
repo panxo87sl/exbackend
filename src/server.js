@@ -1,16 +1,18 @@
 import express from "express";
-//imports Mongoose
-import mongoose from "mongoose";
+//managers
+import ProductManager from "./managers/ProductManager.js"; //logica anterior
+//models ultima entrega
+import ProductModel from "./models/product.model.js";
+//db
 import { connectMongoDB } from "./config/db.js";
 //routes
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/views.router.js";
-//managers
-import ProductManager from "./managers/ProductManager.js";
 //plantillas handlebars
 import { engine } from "express-handlebars";
-//socket.io
+
+//SOCKET.IO
 // import serverHttp from "http";
 import { createServer } from "http";
 import { Server } from "socket.io";
@@ -38,7 +40,7 @@ server.set("io", io);
 
 io.on("connection", async (socket) => {
   console.log("Cliente conectado a WebSocket: " + socket.id);
-  const products = await ProductManager.getAll();
+  const products = await ProductModel.find();
   socket.emit("update-products", products);
 });
 
