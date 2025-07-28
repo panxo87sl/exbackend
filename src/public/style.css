@@ -38,15 +38,22 @@
 
 .product-card .title {
   margin: auto 0;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   text-align: center;
 }
 
 .product-card .price {
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: bold;
   text-align: center;
   margin-top: auto;
+}
+
+.product-card .product-id {
+  font-size: 0.6rem;
+  color: #888;
+  word-break: break-all; /* útil para evitar que se desborde */
+  text-align: center;
 }
 
 footer {
