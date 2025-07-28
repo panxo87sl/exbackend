@@ -18,6 +18,7 @@ socket.on("update-products", (products) => {
       <span class="sku">SKU: ${product.code}</span>
       <h3 class="title">${product.title}</h3>
       <p class="price"><strong>$${product.price}</strong></p>
+      <span class="product-id">${product.category}</span>
       <span class="product-id">${product._id}</span>
     `;
       list.appendChild(card);
