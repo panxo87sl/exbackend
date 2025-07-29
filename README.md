@@ -26,6 +26,7 @@ Rutas de vistas
    📌 Muestra el detalle de un producto específico.
    🔹 Incluye un selector de carritos para poder agregar el producto directamente.
    🔹 Renderiza productDetail.handlebars.
+   🔹 Una vez se agrega el producto al carro me muestra el JSON de confirmacion que devuelve la API. No supe como controlar eso.
 
 💡 Nota:
 Todas las rutas trabajan con datos obtenidos desde MongoDB usando Mongoose.
