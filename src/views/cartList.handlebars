@@ -1,0 +1,16 @@
+<h2>Listado de carritos creados</h2>
+
+{{#if carts.length}}
+  <ul>
+    {{#each carts}}
+      <li>
+        <strong>ID:</strong>
+        {{_id}}
+        —
+        <a href="/carts/{{_id}}">Ver carrito</a>
+      </li>
+    {{/each}}
+  </ul>
+{{else}}
+  <p>No hay carritos creados.</p>
+{{/if}}

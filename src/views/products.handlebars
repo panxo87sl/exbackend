@@ -1,7 +1,36 @@
 <h2>Lista de productos</h2>
 <p><strong>⭐ Esta view no controla productos en tiempo real solo paginación ⭐</strong></p>
 
-<div class="productcards-container">
+<form method="GET" action="/products" class="filter-form">
+  <label for="query">Categoría:</label>
+  <select name="query" id="query">
+    <option value="">Todas</option>
+    <option value="nuevo" {{#if (eq query "nuevo")}}selected{{/if}}>Nuevo</option>
+    <option value="usado" {{#if (eq query "usado")}}selected{{/if}}>Usado</option>
+    <option value="refaccionado" {{#if (eq query "refaccionado")}}selected{{/if}}>Refaccionado</option>
+    <option value="openbox" {{#if (eq query "openbox")}}selected{{/if}}>OpenBox</option>
+  </select>
+
+  <label for="sort">Orden por precio:</label>
+  <select name="sort" id="sort">
+    <option value="">--</option>
+    <option value="asc" {{#if (eq sort "asc")}}selected{{/if}}>Ascendente</option>
+    <option value="desc" {{#if (eq sort "desc")}}selected{{/if}}>Descendente</option>
+  </select>
+
+  <label for="limit">Productos por página:</label>
+  <select name="limit" id="limit">
+    <option value="3" {{#if (eq limit 3)}}selected{{/if}}>3</option>
+    <option value="5" {{#if (eq limit 5)}}selected{{/if}}>5</option>
+    <option value="10" {{#if (eq limit 10)}}selected{{/if}}>10</option>
+    <option value="20" {{#if (eq limit 20)}}selected{{/if}}>20</option>
+  </select>
+
+  <button type="submit">Aplicar filtros</button>
+</form>
+
+<div class="products-container">
+  <div class="productcards-container">
   {{#if products.length}}
     {{#each products}}
       <div class="product-card">
@@ -13,6 +42,20 @@
         <span class="product-id">{{_id}}</span>
       </div>
     {{/each}}
+    </div>
+    <div class="pagination">
+    {{!-- Aqui armo el enlace para la pagina siguiente si es que existe y si es que existen sus otros atributos como sort (ordenamiento) o query (filtro) --}}
+  {{#if hasPrevPage}}
+    <a href="/products?page={{prevPage}}&limit={{limit}}{{#if sort}}&sort={{sort}}{{/if}}{{#if query}}&query={{query}}{{/if}}">&laquo; Página anterior</a>
+  {{/if}}
+
+  <span class="pagination-info">Página {{page}} de {{totalPages}}</span>
+
+  {{#if hasNextPage}}
+    <a href="/products?page={{nextPage}}&limit={{limit}}{{#if sort}}&sort={{sort}}{{/if}}{{#if query}}&query={{query}}{{/if}}">Página siguiente &raquo;</a>
+  {{/if}}
+</div>
+
   {{else}}
     <span>No hay productos disponibles</span>
   {{/if}}

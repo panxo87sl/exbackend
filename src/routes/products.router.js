@@ -16,18 +16,54 @@ router.get("/", async (request, response) => {
   // const products = await ProductManager.getAll();
   // response.json(products);
 
-  // ✅ Nuevo: lógica con Mongoose
+  //Lógica con Mongoose
+  // try {
+  //   const products = await ProductModel.find();
+  //   response.status(200).json({
+  //     status: "success",
+  //     payload: products,
+  //   });
+  // } catch (error) {
+  //   response.status(500).json({
+  //     status: "error",
+  //     message: `${error.name}: Error al obtener los productos`,
+  //     error: error.message,
+  //   });
+  // }
+
+  //Lógica con Paginate
+  const { limit = 10, page = 1, sort, query } = request.query;
 
   try {
-    const products = await ProductModel.find();
+    const options = {
+      page: parseInt(page),
+      limit: parseInt(limit),
+      lean: true, // importante para Handlebars para acceder a valores "en limpio"
+    };
+
+    // Ordenamiento por precio si se indica
+    if (sort === "asc") options.sort = { price: 1 };
+    else if (sort === "desc") options.sort = { price: -1 };
+
+    // Filtro por categoría si se indica
+    const filter = query ? { category: query } : {};
+
+    const result = await ProductModel.paginate(filter, options);
+
     response.status(200).json({
       status: "success",
-      payload: products,
+      payload: result.docs,
+      totalPages: result.totalPages,
+      page: result.page,
+      hasPrevPage: result.hasPrevPage,
+      hasNextPage: result.hasNextPage,
+      prevPage: result.prevPage,
+      nextPage: result.nextPage,
     });
   } catch (error) {
     response.status(500).json({
       status: "error",
-      message: `${error.name}: Error al obtener los productos`,
+      message: `${error.name}: Error al obtener productos paginados`,
       error: error.message,
     });
   }

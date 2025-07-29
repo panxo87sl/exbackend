@@ -1,7 +1,16 @@
-.productcards-container {
+/* Body */
+.products-container {
   display: flex;
   flex-wrap: wrap;
+  flex-direction: column;
   justify-content: flex-start; /* opcional: centra las filas */
+}
+
+.productcards-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .product-card {
@@ -56,6 +65,73 @@
   text-align: center;
 }
 
+/* Paginacion */
+.pagination {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.pagination a {
+  margin: 0 10px;
+  text-decoration: none;
+  color: #007bff;
+}
+
+.pagination-info {
+  margin: 0 10px;
+  color: #555;
+}
+
+/* Filtro */
+.filter-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.filter-form label {
+  font-weight: bold;
+}
+
+.filter-form select,
+.filter-form input,
+.filter-form button {
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Cart Detail */
+.cart-list {
+  list-style: none;
+  padding: 0;
+}
+
+.cart-item {
+  border: 1px solid #ccc;
+  margin: 10px 0;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+/* Cart List */
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  margin: 10px 0;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+  font-family: sans-serif;
+}
+
+/* Footer */
 footer {
   text-align: center;
   padding: 10px;

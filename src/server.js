@@ -10,7 +10,7 @@ import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/views.router.js";
 //plantillas handlebars
-import { engine } from "express-handlebars";
+import handlebars from "express-handlebars";
 
 //SOCKET.IO
 // import serverHttp from "http";
@@ -23,8 +23,15 @@ const server = express(); //instancia principal
 const port = "8080"; //variable puerto
 server.use(express.json()); //midleware para que el server interprete JSON
 
-//config handlebars
-server.engine("handlebars", engine());
+// crear engine con helpers para comparacion en vista de productos y usar "sort" y "filter"
+// esto porque handlebars no tiene la capacidad de hacer comparaciones
+const hbs = handlebars.create({
+  helpers: {
+    eq: (valueA, valueB) => valueA == valueB,
+  },
+});
+//config de handlebars
+server.engine("handlebars", hbs.engine);
 server.set("views", import.meta.dirname + "/views");
 server.set("view engine", "handlebars"); //motor de vistas que se van a utilizar
 //middleware
