@@ -14,6 +14,7 @@
   <button type="submit">Agregar al carrito</button>
 </form>
 
+{{! Script para enviar la información y mostrar una alerta de "agregado correctamente" }}
 <script>
   document.getElementById("cartForm").addEventListener("submit", function(e) { e.preventDefault(); const cartId = document.getElementById("cartSelect").value; const productId = "{{product._id}}";
   this.action = `/api/carts/${cartId}/products/${productId}`; alert("Producto agregado con éxito"); this.submit(); });
