@@ -7,6 +7,7 @@ import CartModel from "../models/cart.model.js";
 
 const viewsRouter = Router();
 
+//Ruta de Vista de todos los prodcutos usando Mongoose y Paginate
 viewsRouter.get("/products", async (request, response) => {
   //Logica sin Mongoose
   // const products = await ProductModel.find().lean();
@@ -48,6 +49,7 @@ viewsRouter.get("/products", async (request, response) => {
   }
 });
 
+//Ruta de Vista de lista de productos utilizando web sockets
 viewsRouter.get("/realtimeproducts", async (request, response) => {
   const products = await ProductModel.find().lean();
   response.render("realTimeProducts", { products });
@@ -64,6 +66,7 @@ viewsRouter.get("/carts", async (req, res) => {
   }
 });
 
+//Ruta de Vista en detalle del carrito
 viewsRouter.get("/carts/:cid", async (request, response) => {
   const cid = request.params.cid;
 
@@ -77,6 +80,22 @@ viewsRouter.get("/carts/:cid", async (request, response) => {
     response.render("cartDetail", { products: auxCart.products });
   } catch (error) {
     response.status(500).send(`${error.name}: Error al obtener carrito. ${error.message}`);
+  }
+});
+
+//Ruta de Vista en detalle del producto
+viewsRouter.get("/products/:pid", async (req, res) => {
+  try {
+    const product = await ProductModel.findById(req.params.pid).lean();
+    const carts = await CartModel.find().select("_id").lean(); // Solo IDs
+
+    if (!product) {
+      return res.status(404).render("error", { message: "Producto no encontrado" });
+    }
+
+    res.render("productDetail", { product, carts });
+  } catch (error) {
+    res.status(500).send(`${error.name}: Error no se puede mostrar el producto. ${error.message}`);
   }
 });
 

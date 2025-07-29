@@ -50,6 +50,14 @@ router.get("/", async (request, response) => {
 
     const result = await ProductModel.paginate(filter, options);
 
+    // Base URL
+    const baseUrl = `${request.protocol}://${request.get("host")}${request.baseUrl}${request.path}`;
+
+    // Links prev y next conservando filtros y limit
+    const prevLink = result.hasPrevPage ? `${baseUrl}?page=${result.prevPage}&limit=${limit}${sort ? `&sort=${sort}` : ""}${query ? `&query=${query}` : ""}` : null;
+
+    const nextLink = result.hasNextPage ? `${baseUrl}?page=${result.nextPage}&limit=${limit}${sort ? `&sort=${sort}` : ""}${query ? `&query=${query}` : ""}` : null;
+
     response.status(200).json({
       status: "success",
       payload: result.docs,
@@ -59,6 +67,8 @@ router.get("/", async (request, response) => {
       hasNextPage: result.hasNextPage,
       prevPage: result.prevPage,
       nextPage: result.nextPage,
+      prevLink,
+      nextLink,
     });
   } catch (error) {
     response.status(500).json({
